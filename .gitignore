@@ -1,0 +1,8 @@
+external/
+
+core_dump*
+build/
+exe/
+log/
+output/
+run_time_config/
