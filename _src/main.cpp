@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
     CORE::clear_terminal();
     time_stamp("It just works");
 
-    main_dynamic_static_polymorphism();
+    polymorphism_benchmark();
 
     return 0;
 }

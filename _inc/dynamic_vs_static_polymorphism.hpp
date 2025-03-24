@@ -3,29 +3,49 @@
 
 // Dynamic //
 
-class Dynamic_Base
+int global_var = 0;
+
+class IDynamic
 {
 public:
     virtual void process() const = 0;
 };
 
-class Dynamic_imp_1 : public Dynamic_Base
+class Dynamic_imp_1 : public IDynamic
 {
 public:
-    virtual void process() const override { std::cout << "Dynamic_imp_1: wykonuję operację." << std::endl; }
+    virtual void process() const override
+    {
+        // std::cout << "Dynamic_imp_1: wykonuję operację." << std::endl;
+        global_var++;
+    }
 };
 
-class Dynamic_imp_2 : public Dynamic_Base
+class Dynamic_imp_2 : public IDynamic
 {
 public:
-    virtual void process() const override { std::cout << "Dynamic_imp_2: wykonuję operację." << std::endl; }
+    virtual void process() const override
+    {
+        // std::cout << "Dynamic_imp_2: wykonuję operację." << std::endl;
+        global_var++;
+    }
+};
+
+class User_dynamic
+{
+    IDynamic* m_impl;
+
+public:
+    User_dynamic(IDynamic* impl) : m_impl(impl) {}
+
+    void process() const { m_impl->process(); }
 };
 
 // Static //
 
 // clang-format off
 template <typename T>
-concept Static_base = requires(T t)
+concept IStatic = requires(T t)
 {
     { t.process() } -> std::same_as<void>;
 };
@@ -34,30 +54,53 @@ concept Static_base = requires(T t)
 class Static_imp_1
 {
 public:
-    void process() const { std::cout << "Static_imp_1: wykonuję operację." << std::endl; }
+    void process() const
+    {
+        // std::cout << "Static_imp_1: wykonuję operację." << std::endl;
+        global_var++;
+    }
 };
-static_assert(Static_base<Static_imp_1>);
+static_assert(IStatic<Static_imp_1>);
 
 class Static_imp_2
 {
 public:
-    void process() const { std::cout << "Static_imp_2: wykonuję operację." << std::endl; }
+    void process() const
+    {
+        // std::cout << "Static_imp_2: wykonuję operację." << std::endl;
+        global_var++;
+    }
 };
-static_assert(Static_base<Static_imp_2>);
+static_assert(IStatic<Static_imp_2>);
 
-template <Static_base T>
-void runProcess(const T& obj)
+template <IStatic imp_t>
+class User_static
 {
-    obj.process();
-}
+    imp_t* m_impl;
 
-int main_dynamic_static_polymorphism()
+public:
+    User_static(imp_t* impl) : m_impl(impl) {}
+
+    void process() const { m_impl->process(); }
+};
+
+void polymorphism_benchmark()
 {
-    Static_imp_1 impl1;
-    Static_imp_2 impl2;
+    User_static<Static_imp_1> user_static_1(new Static_imp_1());
+    User_dynamic user_dynamic_1(new Dynamic_imp_1());
+    size_t max = 1000000;
 
-    runProcess(impl1);
-    runProcess(impl2);
+    time_stamp_reset();
 
-    return 0;
+    for (int i = 0; i < max; i++)
+    {
+        user_static_1.process();
+    }
+    time_stamp("Static");
+
+    for (int i = 0; i < max; i++)
+    {
+        user_dynamic_1.process();
+    }
+    time_stamp("Dynamic");
 }
