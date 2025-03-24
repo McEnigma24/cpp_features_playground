@@ -21,14 +21,13 @@ public:
     virtual void process() const override { std::cout << "Dynamic_imp_2: wykonuję operację." << std::endl; }
 };
 
-// Static // // clang-format off
+// Static //
 
+// clang-format off
 template <typename T>
 concept Static_base = requires(T t)
 {
-    {
-        t.process()
-        } -> std::same_as<void>;
+    { t.process() } -> std::same_as<void>;
 };
 // clang-format on
 
