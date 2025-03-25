@@ -87,6 +87,10 @@ public:
 void polymorphism_benchmark()
 {
     User_static<Static_imp_1> user_static_1(new Static_imp_1());
+
+    // User_static<Static_imp_1> user_static_1(new Static_imp_2());    // Error
+    // User_static<IStatic> user_static_1(new Static_imp_1());         // Error
+
     User_dynamic user_dynamic_1(new Dynamic_imp_1());
     size_t max = 1000000;
 
