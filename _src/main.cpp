@@ -1,6 +1,7 @@
 #include "__preprocessor__.h"
 
 #include "dynamic_vs_static_polymorphism.hpp"
+#include "span.hpp"
 
 #ifdef BUILD_EXECUTABLE
 int main(int argc, char* argv[])
@@ -9,7 +10,9 @@ int main(int argc, char* argv[])
     CORE::clear_terminal();
     time_stamp("It just works");
 
-    polymorphism_benchmark();
+    // polymorphism_benchmark();
+
+    span_play();
 
     return 0;
 }
