@@ -95,4 +95,11 @@ void dynamic_memory()
     AaSysCom::msg_send(msg);
 }
 
-void span_play() { dynamic_memory(); }
+void span_play()
+{
+    var(sizeof(span<u8>));
+    var(sizeof(span<u16>));
+    var(sizeof(span<u32>));
+    var(sizeof(span<u64>));
+    dynamic_memory();
+}
