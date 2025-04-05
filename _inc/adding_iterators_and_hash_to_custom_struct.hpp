@@ -1,12 +1,85 @@
 #include "__preprocessor__.h"
+#include <unordered_map>
 #include <iterator>
+#include <functional>
+
+struct test_struct
+{
+    int tab[10];
+
+    test_struct(int starting_point = 0)
+    {
+        for(int i=0; i<10; i++)
+        {
+            tab[i] = (starting_point + i) % 10;
+        }
+    }
+
+    // Hash //
+    bool operator==(const test_struct& other) const
+    {
+        return tab == other.tab;
+    }
+
+    // Deklaracja funkcji zaprzyjaźnionej do przeciążenia operatora <<
+    friend ostream& operator<<(ostream& os, const test_struct& entry)
+    {
+        for(int i=0; i<10; i++)
+        {
+            os << entry.tab[i] << " ";
+        }
+        return os;
+    }
+};
+
+// Specjalizacja hash dla test_struct //  -> potem gdzieś to jest wołane jako hash("obiekt naszej klasy")
+//                                            operator(), np. Multiply mul; float result = mul(2, 3);
+namespace std
+{
+    template <>
+    struct hash<test_struct>
+    {
+        size_t operator()(const test_struct& entry) const
+        {
+            //                 has to have "()"
+            return hash<const void*>()( static_cast<const void*>(entry.tab) );
+        }
+    };
+}
 
 template <typename T>
 struct entry_t
 {
     T data;
     entry_t* next;
+
+    // Hash //
+    bool operator==(const entry_t& other) const
+    {
+        return data == other.data;
+    }
+
+    // Deklaracja funkcji zaprzyjaźnionej do przeciążenia operatora <<
+    friend ostream& operator<<(ostream& os, const entry_t& entry)
+    {
+        os << entry.data;
+        return os;
+    }
 };
+
+// Specjalizacja hash dla entry_t<T> //
+namespace std
+{
+    template <typename T>
+    struct hash<entry_t<T>>
+    {
+        size_t operator()(const entry_t<T>& entry) const
+        {
+            // Używamy hash dla typu T (zakładamy, że T jest hashowalny)
+            return hash<T>()(entry.data);
+        }
+    };
+}
 
 template <typename T>
 class linked_list
@@ -94,9 +167,9 @@ public:
 
     public:
         // Typy iteratora
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = forward_iterator_tag;
         using value_type = T;
-        using difference_type = std::ptrdiff_t;
+        using difference_type = ptrdiff_t;
         using pointer = T*;
         using reference = T&;
 
@@ -136,9 +209,9 @@ public:
         const entry* current;
 
     public:
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = forward_iterator_tag;
         using value_type = T;
-        using difference_type = std::ptrdiff_t;
+        using difference_type = ptrdiff_t;
         using pointer = const T*;
         using reference = const T&;
 
@@ -168,6 +241,71 @@ public:
     const_iterator begin_const() const { return const_iterator(head); }
     const_iterator end_const() const { return const_iterator(nullptr); }
 };
+
+void normal_hash()
+{
+    unordered_map<string, int> hash_map;
+    hash_map["key1"] = 1;
+    hash_map["key2"] = 2;
+    hash_map["key3"] = 3;
+    hash_map["key4"] = 4;
+    hash_map["key5"] = 5;
+
+    for (const auto& pair : hash_map)
+    {
+        cout << pair.first << ": " << pair.second << "\n";
+    }cout << "\n";
+
+    for (const auto& [key, value] : hash_map)
+    {
+        cout << key << ": " << value << "\n";
+    }cout << "\n";
+}
+
+void hash_example()
+{
+    {
+        // unordered_map<entry_t<int>, string> hash_map;
+        // hash_map[{ 1, nullptr }] = "key1";
+        // hash_map[{ 2, nullptr }] = "key2";
+
+        // for (const auto& [key, value] : hash_map)
+        // {
+        //     cout << key << ": " << value << "\n";
+        // }cout << "\n";
+    }
+
+    {
+        // var(1 % 10);
+        // var(0 % 10);
+        // var((-1 + 10) % 10);
+        // var((-2 + 10) % 10);
+    }
+
+    {
+        // // Does not need hash function //
+        // unordered_map<string, test_struct> hash_map;
+        // hash_map["key1"] = { };
+        // hash_map["key2"] = { 1 };
+
+        // for (const auto& [key, value] : hash_map)
+        // {
+        //     cout << key << ": " << value << "\n";
+        // }cout << "\n";
+    }
+
+    {
+        // NEEDs hash function //
+        unordered_map<test_struct, string> hash_map;
+        hash_map[{ 0 }] = "key1";
+        hash_map[{ 1 }] = "key2";
+
+        for (const auto& [key, value] : hash_map)
+        {
+            cout << key << ": " << value << "\n";
+        }cout << "\n";
+    }
+}
 
 void iterator_example()
 {
