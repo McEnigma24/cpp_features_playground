@@ -65,15 +65,15 @@ public:
     {
         int i = 0;
 
-        // for (entry* e = head; e != nullptr; e = e->next)
-        // {
-        //     cout << i++ << ". " << e->data << endl;
-        // }
-
-        for (auto& e : *this)
+        for (entry* e = head; e != nullptr; e = e->next)
         {
-            cout << i++ << ". " << e << "\n";
+            cout << i++ << ". " << e->data << endl;
         }
+
+        // for (auto& e : *this)
+        // {
+        //     cout << i++ << ". " << e << "\n";
+        // }
 
         cout << "\n";
     }
@@ -165,8 +165,8 @@ public:
     };
 
     // Funkcje begin() i end() dla const_iteratora
-    const_iterator begin() const { return const_iterator(head); }
-    const_iterator end() const { return const_iterator(nullptr); }
+    const_iterator begin_const() const { return const_iterator(head); }
+    const_iterator end_const() const { return const_iterator(nullptr); }
 };
 
 void iterator_example()
@@ -180,17 +180,37 @@ void iterator_example()
 
     l.show_all();
 
+    line("for (auto& e : l)");
+    for (auto& e : l)
+    {
+        cout << e++ << endl;
+    }
+    cout << endl;
+
+    line("for (const auto& e : l)");
     for (const auto& e : l)
     {
         cout << e << endl;
     }
-
     cout << endl;
 
+    line("for (linked_list<int>::iterator i = l.begin(); i != l.end(); ++i)");
     for (linked_list<int>::iterator i = l.begin(); i != l.end(); ++i)
     {
         cout << *i << endl;
+
+        (*i)++;
     }
+    cout << endl;
+
+    line("for (linked_list<int>::const_iterator i = l.begin_const(); i != l.end_const(); ++i)");
+    for (linked_list<int>::const_iterator i = l.begin_const(); i != l.end_const(); ++i)
+    {
+        cout << *i << endl;
+
+        // (*i)++; // Error
+    }
+    cout << endl;
 
     // cout << "Element at index 2: " << l[2] << endl;
 
