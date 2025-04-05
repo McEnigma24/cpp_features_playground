@@ -1,7 +1,7 @@
 #include "__preprocessor__.h"
-#include <unordered_map>
-#include <iterator>
 #include <functional>
+#include <iterator>
+#include <unordered_map>
 
 struct test_struct
 {
@@ -9,22 +9,19 @@ struct test_struct
 
     test_struct(int starting_point = 0)
     {
-        for(int i=0; i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             tab[i] = (starting_point + i) % 10;
         }
     }
 
     // Hash //
-    bool operator==(const test_struct& other) const
-    {
-        return tab == other.tab;
-    }
+    bool operator==(const test_struct& other) const { return tab == other.tab; }
 
     // Deklaracja funkcji zaprzyjaźnionej do przeciążenia operatora <<
     friend ostream& operator<<(ostream& os, const test_struct& entry)
     {
-        for(int i=0; i<10; i++)
+        for (int i = 0; i < 10; i++)
         {
             os << entry.tab[i] << " ";
         }
@@ -42,10 +39,10 @@ namespace std
         size_t operator()(const test_struct& entry) const
         {
             //                 has to have "()"
-            return hash<const void*>()( static_cast<const void*>(entry.tab) );
+            return hash<const void*>()(static_cast<const void*>(entry.tab));
         }
     };
-}
+} // namespace std
 
 template <typename T>
 struct entry_t
@@ -54,10 +51,7 @@ struct entry_t
     entry_t* next;
 
     // Hash //
-    bool operator==(const entry_t& other) const
-    {
-        return data == other.data;
-    }
+    bool operator==(const entry_t& other) const { return data == other.data; }
 
     // Deklaracja funkcji zaprzyjaźnionej do przeciążenia operatora <<
     friend ostream& operator<<(ostream& os, const entry_t& entry)
@@ -79,7 +73,7 @@ namespace std
             return hash<T>()(entry.data);
         }
     };
-}
+} // namespace std
 
 template <typename T>
 class linked_list
@@ -254,12 +248,14 @@ void normal_hash()
     for (const auto& pair : hash_map)
     {
         cout << pair.first << ": " << pair.second << "\n";
-    }cout << "\n";
+    }
+    cout << "\n";
 
     for (const auto& [key, value] : hash_map)
     {
         cout << key << ": " << value << "\n";
-    }cout << "\n";
+    }
+    cout << "\n";
 }
 
 void hash_example()
@@ -297,13 +293,14 @@ void hash_example()
     {
         // NEEDs hash function //
         unordered_map<test_struct, string> hash_map;
-        hash_map[{ 0 }] = "key1";
-        hash_map[{ 1 }] = "key2";
+        hash_map[{0}] = "key1";
+        hash_map[{1}] = "key2";
 
         for (const auto& [key, value] : hash_map)
         {
             cout << key << ": " << value << "\n";
-        }cout << "\n";
+        }
+        cout << "\n";
     }
 }
 
