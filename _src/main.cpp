@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 
     // polymorphism_benchmark();
 
-    span_play();
+    // span_play();
 
     return 0;
 }
