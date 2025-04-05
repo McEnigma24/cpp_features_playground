@@ -64,12 +64,18 @@ public:
     void show_all()
     {
         int i = 0;
-        for (entry* e = head; e != nullptr; e = e->next)
+
+        // for (entry* e = head; e != nullptr; e = e->next)
+        // {
+        //     cout << i++ << ". " << e->data << endl;
+        // }
+
+        for (auto& e : *this)
         {
-            cout << i << ". " << e->data << endl;
-            i++;
+            cout << i++ << ". " << e << "\n";
         }
-        cout << endl;
+
+        cout << "\n";
     }
     T& operator[](size_t index)
     {
@@ -123,6 +129,44 @@ public:
     // Funkcje begin() i end() zwracające iteratory
     iterator begin() { return iterator(head); }
     iterator end() { return iterator(nullptr); }
+
+    // Definicja const_iteratora
+    class const_iterator
+    {
+        const entry* current;
+
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = const T*;
+        using reference = const T&;
+
+        const_iterator(const entry* ptr) : current(ptr) {}
+
+        reference operator*() const { return current->data; }
+        pointer operator->() const { return &(current->data); }
+
+        const_iterator& operator++()
+        {
+            current = current->next;
+            return *this;
+        }
+
+        const_iterator operator++(int)
+        {
+            const_iterator tmp = *this;
+            current = current->next;
+            return tmp;
+        }
+
+        bool operator==(const const_iterator& other) const { return current == other.current; }
+        bool operator!=(const const_iterator& other) const { return current != other.current; }
+    };
+
+    // Funkcje begin() i end() dla const_iteratora
+    const_iterator begin() const { return const_iterator(head); }
+    const_iterator end() const { return const_iterator(nullptr); }
 };
 
 void iterator_example()
@@ -136,9 +180,16 @@ void iterator_example()
 
     l.show_all();
 
-    for (auto& e : l)
+    for (const auto& e : l)
     {
         cout << e << endl;
+    }
+
+    cout << endl;
+
+    for (linked_list<int>::iterator i = l.begin(); i != l.end(); ++i)
+    {
+        cout << *i << endl;
     }
 
     // cout << "Element at index 2: " << l[2] << endl;
