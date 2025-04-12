@@ -39,7 +39,7 @@ void no_write_allocate_memcpy(void* dest, const void* src, size_t n)
     size_t head = 32 - misalign;
 
     // Jeśli mamy początkowy fragment do wyrównania, skopiuj go standardowo
-    if (head > 0 && head <= n)
+    if (0 < head 0 && head <= n)
     {
         std::memcpy(dst, source, head);
         dst += head;
