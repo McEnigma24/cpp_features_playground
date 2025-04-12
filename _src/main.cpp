@@ -27,7 +27,11 @@ int main(int argc, char* argv[])
     }
 
     {
-        ram_access();
+        // ram_access();
+    }
+
+    {
+        // boost_serialization();
     }
 
     return 0;

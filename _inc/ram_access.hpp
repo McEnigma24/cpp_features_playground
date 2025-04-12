@@ -52,7 +52,7 @@ void no_write_allocate_memcpy(void* dest, const void* src, size_t n)
     for (size_t i = 0; i < chunks; i++)
     {
         // Ładujemy 32 bajty z pamięci źródłowej, nie martwiąc się o wyrównanie
-        __m256i data = _mm256_load_si256(reinterpret_cast<const __m256i*>(source));
+        __m256i data = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(source));
         // Strumieniowo zapisujemy dane – wymagana jest wyrównana dest
         _mm256_stream_si256(reinterpret_cast<__m256i*>(dst), data);
         dst += 32;

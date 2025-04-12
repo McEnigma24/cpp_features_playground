@@ -23,9 +23,26 @@ TEST(SampleTest, memcpy_Sanity)
     free(dst);
 }
 
-TEST(SampleTest, no_cache_polutions_memcpy)
+TEST(SampleTest, no_cache_polutions_memcpy_1)
 {
-    size_t size = 1024 * 1024 * 1024; // 1GB
+    size_t size = 1024 * 1024 * 1024; // 1 GB
+
+    void* src = malloc(size);
+    void* dst = malloc(size);
+
+    memset(src, 1, size);
+    memset(dst, 0, size);
+
+    no_write_allocate_memcpy(dst, src, size);
+
+    EXPECT_FALSE(memcmp(src, dst, size)); // returns 0 if equal
+    free(src);
+    free(dst);
+}
+
+TEST(SampleTest, no_cache_polutions_memcpy_2)
+{
+    size_t size = 1024 * 1024 * 3; // 3 MB
 
     void* src = malloc(size);
     void* dst = malloc(size);
