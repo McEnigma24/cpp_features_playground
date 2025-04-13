@@ -31,6 +31,15 @@ int main(int argc, char* argv[])
     }
 
     {
+        // gnu_plot();
+        // progress_bar();
+    }
+
+    {
+        // smart_pointers();
+    }
+
+    {
         // boost_serialization();
     }
 

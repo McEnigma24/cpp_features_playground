@@ -4,3 +4,6 @@
 [submodule "external/CORE_lib"]
 	path = external/CORE_lib
 	url = https://github.com/McEnigma24/CORE_lib.git
+[submodule "external/progress_bar"]
+	path = external/progress_bar
+	url = https://github.com/p-ranav/indicators.git
