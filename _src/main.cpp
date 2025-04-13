@@ -3,6 +3,8 @@
 #include "adding_iterators_and_hash_to_custom_struct.hpp"
 #include "boost_serialization.hpp"
 #include "dynamic_vs_static_polymorphism.hpp"
+#include "gnu_plot.hpp"
+#include "progress_bar.hpp"
 #include "ram_access.hpp"
 #include "span.hpp"
 
@@ -31,7 +33,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        // gnu_plot();
+        gnu_plot();
         // progress_bar();
     }
 

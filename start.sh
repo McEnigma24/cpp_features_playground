@@ -82,6 +82,7 @@ install_packages()
         libstdc++-11-dev
         gcc-multilib
         g++-multilib
+        gnuplot
     )
 
     # Aktualizacja listy pakietów
@@ -137,6 +138,7 @@ create_my_libraries()
 
     LIBS=(
         CORE
+        Randoms
     )
 
     check_if_library_is_present_make_it_if_its_not()

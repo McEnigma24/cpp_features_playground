@@ -7,10 +7,13 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(LIBRARY_PATH_CORE ${CMAKE_CURRENT_SOURCE_DIR}/external/CORE_lib/build/)
-link_directories(${LIBRARY_PATH_CORE})
+set(LIBRARY_PATH_CORE ${CMAKE_CURRENT_SOURCE_DIR}/external/CORE_lib/build)
+set(LIBRARY_RANDOMS_LIB ${CMAKE_CURRENT_SOURCE_DIR}/external/Randoms_lib/build)
 
-include_directories(_inc external/CORE_lib/_inc)
+link_directories(${LIBRARY_PATH_CORE})
+link_directories(${LIBRARY_RANDOMS_LIB})
+
+include_directories(_inc external/CORE_lib/_inc external/progress_bar/include external/Randoms_lib/_inc external/gnu_plot_cpp)
 aux_source_directory(_src SOURCES)
 aux_source_directory(_src/base SOURCES)
 
@@ -26,15 +29,22 @@ aux_source_directory(_test TEST_SOURCES)
 # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wfatal-errors
 
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra")                                                             # to see everything
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wfatal-errors -Werror=uninitialized -Werror=init-self -Werror=reorder")    # for normal coding
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wfatal-errors -Werror=uninitialized -Werror=init-self -Werror=reorder -Wdelete-incomplete")    # for normal coding
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -w")                                                         # for release
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
 
+set(COMPILE_FLAGS "${COMPILE_FLAGS} -m64")
+set(LINK_FLAGS "${LINK_FLAGS} -m64")
 
 
-set(CONST_TARGET_NAME "TEMPLATE")
+set(ALL_LIBRARIES ${LIBRARY_PATH_CORE}/libCORE.a)
+set(ALL_LIBRARIES ${ALL_LIBRARIES} ${LIBRARY_RANDOMS_LIB}/libRandoms.so)
+
+
+
+set(CONST_TARGET_NAME "cpp_playground")
 
 option(BUILD_LIBRARY "Build library instead of library executable" OFF) # default value - could be overwritten by provided FLAG
 
@@ -45,20 +55,16 @@ if(BUILD_LIBRARY)
     # add_library(${TARGET_NAME} SHARED ${SOURCES})
     add_library(${TARGET_NAME} STATIC ${SOURCES})
     target_compile_definitions(${TARGET_NAME} PRIVATE LINUX)
-    set_target_properties(${TARGET_NAME} PROPERTIES COMPILE_FLAGS "-m64" LINK_FLAGS "-m64")
-    target_link_libraries(${TARGET_NAME} PUBLIC 
-        ${LIBRARY_PATH_CORE}/libCORE.a
-    )
+    set_target_properties(${TARGET_NAME} PROPERTIES ${COMPILE_FLAGS} ${LINK_FLAGS})
+    target_link_libraries(${TARGET_NAME} PUBLIC ${ALL_LIBRARIES})
 else()
     message(WARNING "Building exe")
 
     set(TARGET_NAME "${CONST_TARGET_NAME}.exe")
     add_executable(${TARGET_NAME} ${SOURCES})
     target_compile_definitions(${TARGET_NAME} PRIVATE LINUX BUILD_EXECUTABLE)
-    set_target_properties(${TARGET_NAME} PROPERTIES COMPILE_FLAGS "-m64" LINK_FLAGS "-m64")
-    target_link_libraries(${TARGET_NAME} PUBLIC 
-        ${LIBRARY_PATH_CORE}/libCORE.a
-    )
+    set_target_properties(${TARGET_NAME} PROPERTIES ${COMPILE_FLAGS} ${LINK_FLAGS})
+    target_link_libraries(${TARGET_NAME} PUBLIC ${ALL_LIBRARIES})
 endif()
 
 option(CTEST_ACTIVE "Testing is active" OFF)  # default value - could be overwritten by provided FLAG
@@ -74,10 +80,7 @@ if(CTEST_ACTIVE)
     # Dodanie testów
     set(TEST_EXE_NAME "test.texe")  # Nazwa binarki testowej
     add_executable(${TEST_EXE_NAME} ${TEST_SOURCES})
-    target_link_libraries(${TEST_EXE_NAME} PRIVATE
-        gtest_main
-        ${LIBRARY_PATH_CORE}/libCORE.a
-    )
+    target_link_libraries(${TEST_EXE_NAME} PRIVATE gtest_main ${ALL_LIBRARIES})
     # Rejestracja testów
     include(GoogleTest)
     gtest_discover_tests(${TEST_EXE_NAME})

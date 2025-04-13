@@ -7,3 +7,9 @@
 [submodule "external/progress_bar"]
 	path = external/progress_bar
 	url = https://github.com/p-ranav/indicators.git
+[submodule "external/Randoms_lib"]
+	path = external/Randoms_lib
+	url = https://github.com/McEnigma24/Randoms_lib.git
+[submodule "external/gnu_plot_cpp"]
+	path = external/gnu_plot_cpp
+	url = https://github.com/ziotom78/gplotpp.git
