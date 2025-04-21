@@ -11,3 +11,23 @@ void gnu_plot()
     gnuplot.plot(x, y);
     gnuplot.show();
 }
+
+MyString& operator=(const MyString& other)
+{
+    if (this == &other) // 1. Sprawdzenie samozadeklarowania
+        return *this;
+
+    // 2. Zwolnienie dotychczasowych zasobów
+    delete[] data_;
+
+    // 3. Kopiowanie rozmiaru i alokacja nowych zasobów
+    size_ = other.size_;
+    if (other.data_)
+    {
+        data_ = new char[size_ + 1];
+        std::strcpy(data_, other.data_); // Głębokie kopiowanie danych
+    }
+    else { data_ = nullptr; }
+
+    return *this; // 4. Zwrócenie odniesienia do siebie
+}
