@@ -12,22 +12,74 @@ void gnu_plot()
     gnuplot.show();
 }
 
-MyString& operator=(const MyString& other)
+class MyString
 {
-    if (this == &other) // 1. Sprawdzenie samozadeklarowania
-        return *this;
+private:
+    char* data_;
+    size_t size_;
 
-    // 2. Zwolnienie dotychczasowych zasobów
-    delete[] data_;
+public:
+    // Konstruktor domyślny
+    MyString() : data_(nullptr), size_(0) {}
 
-    // 3. Kopiowanie rozmiaru i alokacja nowych zasobów
-    size_ = other.size_;
-    if (other.data_)
+    // Konstruktor z C-stringa
+    MyString(const char* src)
     {
-        data_ = new char[size_ + 1];
-        std::strcpy(data_, other.data_); // Głębokie kopiowanie danych
+        if (src)
+        {
+            size_ = std::strlen(src);
+            data_ = new char[size_ + 1];
+            std::strcpy(data_, src);
+        }
+        else
+        {
+            data_ = nullptr;
+            size_ = 0;
+        }
     }
-    else { data_ = nullptr; }
 
-    return *this; // 4. Zwrócenie odniesienia do siebie
-}
+    // Konstruktor kopiujący (Reguła trzech)
+    MyString(const MyString& other)
+    {
+        size_ = other.size_;
+        if (other.data_)
+        {
+            data_ = new char[size_ + 1];
+            std::strcpy(data_, other.data_);
+        }
+        else { data_ = nullptr; }
+    }
+
+    // Destruktor
+    ~MyString() { delete[] data_; }
+
+    // Przeciążony operator przypisania
+    MyString& operator=(const MyString& other)
+    {
+        if (this == &other) // 1. Sprawdzenie samozadeklarowania
+            return *this;
+
+        // 2. Zwolnienie dotychczasowych zasobów
+        delete[] data_;
+
+        // 3. Kopiowanie rozmiaru i alokacja nowych zasobów
+        size_ = other.size_;
+        if (other.data_)
+        {
+            data_ = new char[size_ + 1];
+            std::strcpy(data_, other.data_); // Głębokie kopiowanie danych
+        }
+        else { data_ = nullptr; }
+
+        return *this; // 4. Zwrócenie odniesienia do siebie
+    }
+
+    // Metoda pomocnicza do wypisania zawartości
+    void print() const
+    {
+        if (data_)
+            std::cout << data_;
+        else
+            std::cout << "(null)";
+    }
+};
