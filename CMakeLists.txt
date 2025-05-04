@@ -35,6 +35,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wfatal-errors -Werror=uninitialized 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
 
+#                                                                  https://hjlebbink.github.io/x86doc/
+#                                                                  - look for *.o file
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -S") # ASSEMBLY
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -S -fverbose-asm") # ASSEMBLY with comments
+
 set(COMPILE_FLAGS "${COMPILE_FLAGS} -m64")
 set(LINK_FLAGS "${LINK_FLAGS} -m64")
 

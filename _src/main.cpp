@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        gnu_plot();
+        // gnu_plot();
         // progress_bar();
     }
 
