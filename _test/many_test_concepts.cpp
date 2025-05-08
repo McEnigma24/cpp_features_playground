@@ -4,7 +4,7 @@
 #include "__preprocessor__.h"
 
 // 1) Prosty test niezależny
-TEST(SampleTest, Sanity) { EXPECT_EQ(1, 1); }
+TEST(SampleTest, Sanity_2) { EXPECT_EQ(1, 1); }
 
 // 2) TEST_F – testy oparte na fixtures
 class MyFixture : public ::testing::Test
@@ -40,30 +40,23 @@ TEST_F(MyFixture, FirstElementIsZero)
 }
 
 // 3) TEST_P + INSTANTIATE_TEST_CASE_P – testy parametryzowane
-// 3a) Definicja klasy-fixtury parametrów
 typedef std::pair<int, bool> IntBoolPair;
 class ParityTest : public ::testing::TestWithParam<IntBoolPair>
 {
 };
 
-// 3b) Logika testu korzystająca z GetParam()
+// clang-format off
+INSTANTIATE_TEST_CASE_P(ParityChecks, ParityTest, 
+::testing::Values(
+                    IntBoolPair(0, true)
+                    , IntBoolPair(1, false)
+                    , IntBoolPair(42, true)
+                    , IntBoolPair(17, false)
+));
+// clang-format on
+
 TEST_P(ParityTest, CheckEven)
 {
-    int value = GetParam().first;
-    bool isEven = GetParam().second;
+    auto [value, isEven] = GetParam(); // C++17 structured binding
     EXPECT_EQ((value % 2 == 0), isEven);
-}
-
-// 3c) Instancjonowanie testów z zestawem wartości
-INSTANTIATE_TEST_CASE_P(ParityChecks, // prefiks wygenerowanych testów
-                        ParityTest,   // nazwa klasy TEST_P
-                        ::testing::Values(IntBoolPair(0, true), IntBoolPair(1, false), IntBoolPair(42, true), IntBoolPair(17, false)));
-
-// Główny punkt wejścia do testów
-typedef ::testing::InitGoogleTest InitGTest;
-
-int main(int argc, char** argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }
