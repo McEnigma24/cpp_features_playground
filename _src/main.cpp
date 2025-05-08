@@ -15,6 +15,11 @@ int main(int argc, char* argv[])
     // CORE::clear_terminal();
     time_stamp("It just works");
 
+    var(NUM(1, 000));
+    var(NUM(1, 000, 000));
+    var(NUM(1, 000, 000, 000));
+    var(NUM(1, 000, 000, 000, 000));
+
     {
         // polymorphism_benchmark();
     }
