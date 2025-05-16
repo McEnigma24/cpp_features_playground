@@ -7,6 +7,7 @@
 #include "progress_bar.hpp"
 #include "ram_access.hpp"
 #include "span.hpp"
+#include "vector_custom_allocator_and_overloaded_global_new_and_delete.hpp"
 
 #ifdef BUILD_EXECUTABLE
 int main(int argc, char* argv[])
@@ -43,11 +44,15 @@ int main(int argc, char* argv[])
     }
 
     {
-        // smart_pointers();
+        // smart_pointers(); // TODO
     }
 
     {
         // boost_serialization();
+    }
+
+    {
+        vector_custom_allocator_and_overloaded_global_new_and_delete();
     }
 
     return 0;
