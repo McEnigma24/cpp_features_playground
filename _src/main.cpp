@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     }
 
     {
-        vector_custom_allocator_and_overloaded_global_new_and_delete();
+        // vector_custom_allocator_and_overloaded_global_new_and_delete();
     }
 
     return 0;
