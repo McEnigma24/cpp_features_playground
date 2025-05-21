@@ -1,15 +1,23 @@
 #include "__preprocessor__.h"
 
+static size_t currently_used_memory_in_BYTES = 0;
+static size_t last_allocated_size = 0;
+
 void* operator new(size_t size)
 {
     cout << "New operator overloading - " << size << endl;
+    last_allocated_size = size;
+    currently_used_memory_in_BYTES += size;
+    sizeof_imp(currently_used_memory_in_BYTES);
     void* p = malloc(size);
     return p;
 }
 
 void operator delete(void* p)
 {
-    cout << "Delete operator overloading " << endl;
+    cout << "Delete operator overloading - NO SIZE" << endl;
+    currently_used_memory_in_BYTES -= last_allocated_size;
+    sizeof_imp(currently_used_memory_in_BYTES);
     free(p);
 }
 
@@ -59,10 +67,7 @@ public:
         return buffer;
     }
 
-    void deallocate(T* /*p*/, size_t /*n*/) noexcept
-    {
-        if (!buffer) delete[] buffer;
-    }
+    void deallocate(T* /*p*/, size_t /*n*/) noexcept { delete[] buffer; }
 
 private:
     T* buffer;
@@ -74,7 +79,7 @@ void vector_custom_allocator_and_overloaded_global_new_and_delete()
     time_stamp("vector_custom_allocator_and_overloaded_global_new_and_delete");
     // checking_if_it_works();
 
-    const size_t BUFFER_SIZE = 100000000;
+    const size_t BUFFER_SIZE = 100'000'000;
 
     for (;;)
     {
