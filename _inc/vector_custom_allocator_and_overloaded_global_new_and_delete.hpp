@@ -59,7 +59,10 @@ public:
         return buffer;
     }
 
-    void deallocate(T* /*p*/, size_t /*n*/) noexcept { delete[] buffer; }
+    void deallocate(T* /*p*/, size_t /*n*/) noexcept
+    {
+        if (!buffer) delete[] buffer;
+    }
 
 private:
     T* buffer;
