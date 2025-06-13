@@ -7,6 +7,7 @@
 #include "progress_bar.hpp"
 #include "ram_access.hpp"
 #include "span.hpp"
+#include "tipping_buffer.hpp"
 #include "vector_custom_allocator_and_overloaded_global_new_and_delete.hpp"
 
 #ifdef BUILD_EXECUTABLE
@@ -16,10 +17,10 @@ int main(int argc, char* argv[])
     // CORE::clear_terminal();
     time_stamp("It just works");
 
-    var(NUM(1, 000));
-    var(NUM(1, 000, 000));
-    var(NUM(1, 000, 000, 000));
-    var(NUM(1, 000, 000, 000, 000));
+    // var(NUM(1, 000));
+    // var(NUM(1, 000, 000));
+    // var(NUM(1, 000, 000, 000));
+    // var(NUM(1, 000, 000, 000, 000));
 
     {
         // polymorphism_benchmark();
@@ -52,8 +53,14 @@ int main(int argc, char* argv[])
     }
 
     {
-        vector_custom_allocator_and_overloaded_global_new_and_delete();
+        // vector_custom_allocator_and_overloaded_global_new_and_delete();
     }
+
+    {
+        trippin();
+    }
+
+    time_stamp("End of main");
 
     return 0;
 }

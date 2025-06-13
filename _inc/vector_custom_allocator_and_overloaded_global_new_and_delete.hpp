@@ -3,23 +3,23 @@
 static size_t currently_used_memory_in_BYTES = 0;
 static size_t last_allocated_size = 0;
 
-void* operator new(size_t size)
-{
-    cout << "New operator overloading - " << size << endl;
-    last_allocated_size = size;
-    currently_used_memory_in_BYTES += size;
-    sizeof_imp(currently_used_memory_in_BYTES);
-    void* p = malloc(size);
-    return p;
-}
+// void* operator new(size_t size)
+// {
+//     cout << "New operator overloading - " << size << endl;
+//     last_allocated_size = size;
+//     currently_used_memory_in_BYTES += size;
+//     sizeof_imp(currently_used_memory_in_BYTES);
+//     void* p = malloc(size);
+//     return p;
+// }
 
-void operator delete(void* p)
-{
-    cout << "Delete operator overloading - NO SIZE" << endl;
-    currently_used_memory_in_BYTES -= last_allocated_size;
-    sizeof_imp(currently_used_memory_in_BYTES);
-    free(p);
-}
+// void operator delete(void* p)
+// {
+//     cout << "Delete operator overloading - NO SIZE" << endl;
+//     currently_used_memory_in_BYTES -= last_allocated_size;
+//     sizeof_imp(currently_used_memory_in_BYTES);
+//     free(p);
+// }
 
 void checking_if_it_works()
 {
