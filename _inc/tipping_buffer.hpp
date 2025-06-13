@@ -5,8 +5,6 @@
 #include <tuple>
 #include <vector>
 
-// SumReleaseBuffer //
-
 // --- TippingBuffer Templates ---
 template <bool active>
 class TippingBuffer;
@@ -183,12 +181,14 @@ public:
 enum class L2ProfilerSectionsPerSlotActions
 {
     SMDLUL_PROCESS_SMCELLS,
+
     ALL_SECTIONS
 };
 enum class L2ProfilerSectionsMsgProcessing
 {
     MIB,
     SIB1,
+
     ALL_SECTIONS
 };
 
@@ -235,10 +235,13 @@ public:
 
     void addSectionMeasurement(L2ProfilerSectionsPerSlotActions section, uint64_t p)
     {
-        perGranuleCodeSections[(int)section].add(p);
-        perSlotCodeSections[(int)section].add(p);
+        perGranuleCodeSections[static_cast<uint64_t>(section)].add(p);
+        perSlotCodeSections[static_cast<uint64_t>(section)].add(p);
     }
-    void addSectionMeasurement(L2ProfilerSectionsMsgProcessing section, uint64_t p) { perMsgProcessingCodeSections[(int)section].add(p); }
+    void addSectionMeasurement(L2ProfilerSectionsMsgProcessing section, uint64_t p)
+    {
+        perMsgProcessingCodeSections[static_cast<uint64_t>(section)].add(p);
+    }
 
     void log()
     {
@@ -277,6 +280,12 @@ public:
     }
 };
 
+// zmienić getSlotGranularity
+// dorobić scoped time expiry
+// dorobić section explicite start / stop
+
+// funkcja co zwraca ilość bucketów, kiedy podajemy jej jaki chcemy interwał pomiędzy binami
+
 void trippin()
 {
     L2Profiler profiler(16);
@@ -285,9 +294,9 @@ void trippin()
     {
         profiler.addGranularityMeasurement(rand() % 62500);
 
-        addSectionMeasurement(L2ProfilerSectionsPerSlotActions::SMDLUL_PROCESS_SMCELLS, rand() % 100);
-        addSectionMeasurement(L2ProfilerSectionsMsgProcessing::MIB, rand() % 100);
-        addSectionMeasurement(L2ProfilerSectionsMsgProcessing::SIB1, rand() % 100);
+        profiler.addSectionMeasurement(L2ProfilerSectionsPerSlotActions::SMDLUL_PROCESS_SMCELLS, rand() % 100);
+        profiler.addSectionMeasurement(L2ProfilerSectionsMsgProcessing::MIB, rand() % 100);
+        profiler.addSectionMeasurement(L2ProfilerSectionsMsgProcessing::SIB1, rand() % 100);
     }
 
     profiler.log();
