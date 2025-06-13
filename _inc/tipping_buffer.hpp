@@ -11,6 +11,12 @@
 template <bool active>
 class TippingBuffer;
 
+// true / false -> sets TippingBuffer active or no //
+
+// if it's false - values get right-throught it, and obj does not wast memory space
+// if it's true - values are summed together until num of entry limit is reached, that summed value is released (mechanism to get slot stats with
+// granularity measurement)
+
 template <>
 class TippingBuffer<true>
 {
@@ -19,7 +25,7 @@ class TippingBuffer<true>
     uint64_t count;
 
 public:
-    TippingBuffer() : tippingThreshold(1), sum(0), count(0) {}
+    TippingBuffer() : tippingThreshold(1) { resetBuffer(); }
 
     void setThreshold(size_t _tippingThreshold) { tippingThreshold = _tippingThreshold; }
 
@@ -31,7 +37,7 @@ public:
 
     std::optional<uint64_t> add(uint64_t value)
     {
-        sum += value;
+        sum += value; // accumulating
         count++;
         linee("add");
         varr(value);
@@ -42,7 +48,7 @@ public:
             line("RELEASE");
             uint64_t result = sum;
             resetBuffer();
-            return result;
+            return result; // RELEASE
         }
         line("accumulating");
         return std::nullopt;
@@ -60,67 +66,6 @@ public:
     void resetBuffer() {}
 
     std::optional<uint64_t> add(uint64_t value) { return value; }
-};
-
-// --- Histogram Class ---
-template <bool active>
-class Histogram
-{
-    const uint64_t singleBucketDuration;
-    std::vector<uint64_t> histogram;
-    TippingBuffer<active> tippingBuffer; // tutaj się wlewa i dopiero potem przekazywane jest do histogramu jako jedna wartość
-
-    size_t getIndex(uint64_t time) const
-    {
-        uint64_t index = time / singleBucketDuration;
-        return std::clamp(index, static_cast<uint64_t>(0), histogram.size() - 1);
-    }
-
-public:
-    Histogram(uint64_t totalDuration, uint64_t numBuckets) : singleBucketDuration(totalDuration / numBuckets), histogram(numBuckets)
-    {
-        clearHistData();
-    }
-
-    void setThreshold(size_t threshold) { tippingBuffer.setThreshold(threshold); }
-
-    void clearHistData()
-    {
-        std::memset(histogram.data(), 0, histogram.size() * sizeof(uint64_t));
-        tippingBuffer.resetBuffer();
-    }
-
-    void add(uint64_t p)
-    {
-        auto result = tippingBuffer.add(p);
-        if (!result.has_value()) return;
-
-        p = result.value();
-        histogram[getIndex(p)]++;
-    }
-
-    string howManyLines(int count) const
-    {
-        string result;
-        for (size_t i = 0; i < count; ++i)
-        {
-            result += "|";
-        }
-        return result;
-    }
-
-    void log()
-    {
-        uint64_t bucketStart = 0;
-        uint64_t bucketEnd = singleBucketDuration;
-        for (auto& bucket : histogram)
-        {
-            line("Bucket (" << bucketStart << " - " << bucketEnd << ") : " << howManyLines(bucket) << bucket << " ");
-
-            bucketStart += singleBucketDuration;
-            bucketEnd += singleBucketDuration;
-        }
-    }
 };
 
 // --- StatsPack Template ---
@@ -148,17 +93,90 @@ public:
 
     void add(uint64_t p)
     {
-        auto result = tippingBuffer.add(p);
+        auto result = tippingBuffer.add(p); // accumulating
         if (!result.has_value()) return;
 
         p = result.value();
         if (p < min) min = p;
         if (p > max) max = p;
-        sum += p;
+        sum += p; // RELEASE
         count++;
     }
 
     std::tuple<uint64_t, uint64_t, uint64_t> get() { return {min, max, count > 0 ? sum / count : 0}; }
+};
+
+// --- Histogram Class ---
+template <bool active>
+class Histogram
+{
+    const uint64_t singleBucketDuration;
+    std::vector<uint64_t> histogram;
+    TippingBuffer<active> tippingBuffer; // tutaj się wlewa i dopiero potem przekazywane jest do histogramu jako jedna wartość
+    StatsPack<false> histogramStats;
+
+    size_t getIndex(uint64_t time) const
+    {
+        uint64_t index = time / singleBucketDuration;
+        return std::clamp(index, static_cast<uint64_t>(0), histogram.size() - 1);
+    }
+
+public:
+    Histogram(uint64_t totalDuration, uint64_t numBuckets) : singleBucketDuration(totalDuration / numBuckets), histogram(numBuckets)
+    {
+        clearHistData();
+    }
+
+    void setThreshold(size_t threshold) { tippingBuffer.setThreshold(threshold); }
+
+    void clearHistData()
+    {
+        std::memset(histogram.data(), 0, histogram.size() * sizeof(uint64_t));
+        tippingBuffer.resetBuffer();
+    }
+
+    void add(uint64_t p)
+    {
+        auto result = tippingBuffer.add(p); // accumulating
+        if (!result.has_value()) return;
+
+        p = result.value(); // RELEASE
+
+        histogramStats.add(p);
+        histogram[getIndex(p)]++;
+    }
+
+    string howManyLines(int count) const
+    {
+        string result;
+        for (size_t i = 0; i < count; ++i)
+        {
+            result += "|";
+        }
+        return result;
+    }
+
+    void log()
+    {
+        uint64_t bucketStart = 0;
+        uint64_t bucketEnd = singleBucketDuration;
+
+        nline;
+
+        auto [min, max, avg] = histogramStats.get();
+
+        varr(min);
+        varr(max);
+        var(avg);
+
+        for (auto& bucket : histogram)
+        {
+            line("Bucket (" << bucketStart << " - " << bucketEnd << ") : " << howManyLines(bucket) << bucket << " ");
+
+            bucketStart += singleBucketDuration;
+            bucketEnd += singleBucketDuration;
+        }
+    }
 };
 
 // --- Enums ---
@@ -192,7 +210,7 @@ class L2Profiler
 
     void setSlotThreshold(uint32_t threshold)
     {
-        // oddamy jeszcze dla Histogramu to samo -> tam będzie osobny wektor
+        // oddamy jeszcze dla Histogramu to samo -> tam będzie osobny wektor //
 
         mSlotHistogram.setThreshold(threshold);
 
@@ -202,15 +220,26 @@ class L2Profiler
 
 public:
     L2Profiler(uint32_t cellScsNumerology)
-        : mGranularityHistogram(oneGranularityDuration, 10), mSlotHistogram(getSlotGranularity(cellScsNumerology), 10)
+        : mGranularityHistogram(oneGranularityDuration, 25), mSlotHistogram(getSlotGranularity(cellScsNumerology), 25)
     {
-        setSlotThreshold(10);
+        setSlotThreshold(cellScsNumerology);
     }
 
     uint64_t getSlotGranularity(uint32_t cellScsNumerology) const { return cellScsNumerology * oneGranularityDuration; }
 
-    void addGranularity(uint64_t p) { mGranularityHistogram.add(p); }
-    void addSlot(uint64_t p) { mSlotHistogram.add(p); }
+    void addGranularityMeasurement(uint64_t p)
+    {
+        mGranularityHistogram.add(p);
+        mSlotHistogram.add(p);
+    }
+
+    void addSectionMeasurement(L2ProfilerSectionsPerSlotActions section, uint64_t p)
+    {
+        perGranuleCodeSections[(int)section].add(p);
+        perSlotCodeSections[(int)section].add(p);
+    }
+    void addSectionMeasurement(L2ProfilerSectionsMsgProcessing section, uint64_t p) { perMsgProcessingCodeSections[(int)section].add(p); }
+
     void log()
     {
         line("Granularity Histogram:");
@@ -218,6 +247,33 @@ public:
 
         line("Slot Histogram:");
         mSlotHistogram.log();
+
+        line("Per Granule Actions:");
+        for (auto& perGranule : perGranuleCodeSections)
+        {
+            auto [min, max, avg] = perGranule.get();
+            varr(min);
+            varr(max);
+            var(avg);
+        }
+
+        line("Per Slot Actions:");
+        for (auto& perSlot : perSlotCodeSections)
+        {
+            auto [min, max, avg] = perSlot.get();
+            varr(min);
+            varr(max);
+            var(avg);
+        }
+
+        line("Msg Processing:");
+        for (auto& msgProcessing : perMsgProcessingCodeSections)
+        {
+            auto [min, max, avg] = msgProcessing.get();
+            varr(min);
+            varr(max);
+            var(avg);
+        }
     }
 };
 
@@ -227,10 +283,14 @@ void trippin()
 
     for (int i = 0; i < 1000; ++i)
     {
-        profiler.addGranularity(rand() % 62500);
-        profiler.addSlot(rand() % 62500);
+        profiler.addGranularityMeasurement(rand() % 62500);
+
+        addSectionMeasurement(L2ProfilerSectionsPerSlotActions::SMDLUL_PROCESS_SMCELLS, rand() % 100);
+        addSectionMeasurement(L2ProfilerSectionsMsgProcessing::MIB, rand() % 100);
+        addSectionMeasurement(L2ProfilerSectionsMsgProcessing::SIB1, rand() % 100);
     }
 
     profiler.log();
+
     line("End of trippin");
 }
