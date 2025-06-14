@@ -301,5 +301,17 @@ void trippin()
 
     profiler.log();
 
+    StatsPack<true> t;
+    StatsPack<false> f;
+
+    var(sizeof(t));
+    var(sizeof(f));
+
+    TippingBuffer<true> tt;
+    TippingBuffer<false> ff;
+
+    var(sizeof(tt));
+    var(sizeof(ff));
+
     line("End of trippin");
 }
