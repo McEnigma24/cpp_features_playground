@@ -283,8 +283,16 @@ public:
 // zmienić getSlotGranularity
 // dorobić scoped time expiry
 // dorobić section explicite start / stop
+// raprojektować tak komunikację z Executorem, że dodanie nowej sekcji nie będzie trudne i że z poziomu Executora będzie można
+// włączać / wyłączać sekcje, które mają być mierzone
 
-// funkcja co zwraca ilość bucketów, kiedy podajemy jej jaki chcemy interwał pomiędzy binami
+// + włączanie konkretnych sekcji (bitset, array<bool>)
+// MACRO automatyczne sprawdzenie podczas markowania sekcji kodu !!!
+// -> periodyczne wysyłanie (np. jakiś counter wewnątrz L2Profiler, jak się ileś zbierze to wysyłamy, albo liczymi ticki i wysyłamy po jakimś czasie)
+// -> on request (msg handle)
+
+// Dodatek -> funkcja co zwraca ilość bucketów, kiedy podajemy jej jaki chcemy interwał pomiędzy binami
+//
 
 void trippin()
 {
