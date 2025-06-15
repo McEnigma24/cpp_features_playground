@@ -6,6 +6,7 @@
 #include "gnu_plot.hpp"
 #include "progress_bar.hpp"
 #include "ram_access.hpp"
+#include "singleton.hpp"
 #include "span.hpp"
 #include "tipping_buffer.hpp"
 #include "vector_custom_allocator_and_overloaded_global_new_and_delete.hpp"
@@ -57,7 +58,11 @@ int main(int argc, char* argv[])
     }
 
     {
-        trippin();
+        // trippin();
+    }
+
+    {
+        singletining();
     }
 
     time_stamp("End of main");
