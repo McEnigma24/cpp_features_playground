@@ -36,12 +36,12 @@ public:
     std::optional<uint64_t> add(uint64_t value)
     {
         sum += value; // accumulating
-        count++;
+        // count++;
         linee("add");
         varr(value);
         varr(sum);
         varr(count);
-        if (count == tippingThreshold)
+        if (++count == tippingThreshold)
         {
             line("RELEASE");
             uint64_t result = sum;
