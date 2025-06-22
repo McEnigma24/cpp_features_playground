@@ -62,7 +62,10 @@ int main(int argc, char* argv[])
     }
 
     {
-        singletining();
+        // singletining();
+    }
+
+    {
     }
 
     time_stamp("End of main");
