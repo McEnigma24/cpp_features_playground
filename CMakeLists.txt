@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
-    
+
 # set(CMAKE_CXX_COMPILER g++)
-set(CMAKE_CXX_COMPILER clang++)
+# set(CMAKE_CXX_COMPILER clang++)
 
 set(LIBRARY_PATH_CORE ${CMAKE_CURRENT_SOURCE_DIR}/external/CORE_lib/build)
 set(LIBRARY_RANDOMS_LIB ${CMAKE_CURRENT_SOURCE_DIR}/external/Randoms_lib/build)

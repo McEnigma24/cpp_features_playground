@@ -60,11 +60,11 @@ void likely_unlikelying()
     #error "Nieznany lub bardzo stary standard C++"
 #endif
 
-#if defined(CHUJ)
-    line("CHUJ defined");
-#else
-    #error "Okropna strata, CHUJ nie jest zdefiniowany"
-#endif
+    // #if defined(CHUJ)
+    //     line("CHUJ defined");
+    // #else
+    //     #error "Okropna strata, CHUJ nie jest zdefiniowany"
+    // #endif
 
     int test_values[] = {0, 1};
 
