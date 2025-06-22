@@ -41,14 +41,14 @@ void checking_if_it_works()
     var(paaaaaa[0]);
     var(paaaaaaa[0]);
 
-    delete p;
-    delete pa;
-    delete paa;
-    delete paaa;
-    delete paaaa;
-    delete paaaaa;
-    delete paaaaaa;
-    delete paaaaaaa;
+    delete[] p;
+    delete[] pa;
+    delete[] paa;
+    delete[] paaa;
+    delete[] paaaa;
+    delete[] paaaaa;
+    delete[] paaaaaa;
+    delete[] paaaaaaa;
 }
 
 template <typename T>

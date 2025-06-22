@@ -4,6 +4,7 @@
 #include "boost_serialization.hpp"
 #include "dynamic_vs_static_polymorphism.hpp"
 #include "gnu_plot.hpp"
+#include "likely_unlikely.hpp"
 #include "progress_bar.hpp"
 #include "ram_access.hpp"
 #include "singleton.hpp"
@@ -66,6 +67,7 @@ int main(int argc, char* argv[])
     }
 
     {
+        likely_unlikelying();
     }
 
     time_stamp("End of main");

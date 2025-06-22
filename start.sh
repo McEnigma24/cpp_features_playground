@@ -83,6 +83,8 @@ install_packages()
         gcc-multilib
         g++-multilib
         gnuplot
+        clang
+        libomp-dev
     )
 
     # Aktualizacja listy pakietów
