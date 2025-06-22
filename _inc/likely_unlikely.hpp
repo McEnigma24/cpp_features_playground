@@ -26,6 +26,23 @@ void test_likely_unlikely(int x)
     else [[unlikely]] { std::cout << "[[unlikely]] x != 0 (unlikely path)\n"; }
 }
 
+#if __cplusplus >= 202002L
+    #define if_likely(cond)   if (cond) [[likely]]
+    #define if_unlikely(cond) if (cond) [[unlikely]]
+#elif defined(__GNUC__) || defined(__clang__)
+    #define if_likely(cond)   if (__builtin_expect(!!(cond), 1))
+    #define if_unlikely(cond) if (__builtin_expect(!!(cond), 0))
+#else
+    #define if_likely(cond)   if (cond)
+    #define if_unlikely(cond) if (cond)
+#endif
+
+void testing_macros(int x)
+{
+    if_likely(x == 0) { std::cout << "if_likely \n"; }
+    if_unlikely(x == 1) { std::cout << "if_unlikely \n"; }
+}
+
 void likely_unlikelying()
 {
 #define USING_GCC (defined(__GNUC__) && !defined(__clang__))
@@ -74,5 +91,7 @@ void likely_unlikelying()
         test_builtin_expect(x);
         test_likely_unlikely(x);
         test_builtin_expect_prob(x);
+        testing_macros(x);
+        std::cout << "---------------------------------\n";
     }
 }
