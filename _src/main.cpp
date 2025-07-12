@@ -11,6 +11,7 @@
 #include "span.hpp"
 #include "tipping_buffer.hpp"
 #include "vector_custom_allocator_and_overloaded_global_new_and_delete.hpp"
+#include "xor_linked_list.hpp"
 
 #ifdef BUILD_EXECUTABLE
 int main(int argc, char* argv[])
@@ -67,7 +68,11 @@ int main(int argc, char* argv[])
     }
 
     {
-        likely_unlikelying();
+        // likely_unlikelying();
+    }
+
+    {
+        xoiring();
     }
 
     time_stamp("End of main");
