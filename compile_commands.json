@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/womackow/cpp_projects/cpp_features_playground/build",
+  "command": "/usr/bin/c++ -DBUILD_EXECUTABLE -DLINUX -I/home/womackow/cpp_projects/cpp_features_playground/_inc -I/home/womackow/cpp_projects/cpp_features_playground/external/CORE_lib/_inc -I/home/womackow/cpp_projects/cpp_features_playground/external/progress_bar/include -I/home/womackow/cpp_projects/cpp_features_playground/external/Randoms_lib/_inc -I/home/womackow/cpp_projects/cpp_features_playground/external/gnu_plot_cpp  -g -Wfatal-errors -Werror=uninitialized -Werror=init-self -Werror=reorder -Wdelete-incomplete -fopenmp -mavx2 -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/cpp_playground.exe.dir/_src/main.cpp.o -c /home/womackow/cpp_projects/cpp_features_playground/_src/main.cpp",
+  "file": "/home/womackow/cpp_projects/cpp_features_playground/_src/main.cpp"
+}
+]

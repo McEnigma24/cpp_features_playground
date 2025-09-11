@@ -73,6 +73,7 @@ install_packages()
 
     # Lista pakietów do zainstalowania
     PACKAGES=(
+        indent
         tar
         make
         cmake

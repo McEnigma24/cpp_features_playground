@@ -1,0 +1,13 @@
+compilation_database_dir: ./build
+output_directory: ./diagrams
+
+diagrams:
+  class_diagram:
+    type: class
+    glob:
+      - _inc/xor_linked_list.hpp
+      - _src/main.cpp
+    using_namespace: basic_class
+    include:
+      namespaces:
+        - smart_pointers

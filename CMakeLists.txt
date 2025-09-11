@@ -10,6 +10,8 @@ endif()
 # set(CMAKE_CXX_COMPILER g++)
 # set(CMAKE_CXX_COMPILER clang++)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(LIBRARY_PATH_CORE ${CMAKE_CURRENT_SOURCE_DIR}/external/CORE_lib/build)
 set(LIBRARY_RANDOMS_LIB ${CMAKE_CURRENT_SOURCE_DIR}/external/Randoms_lib/build)
 

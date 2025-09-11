@@ -1,0 +1,45 @@
+@startuml
+
+' -- OPIS PLANTUML: każda klasa ma atrybuty i metody, public (+), private (–), protected (#)
+' patrz: PlantUML Language Guide, pola/metody w formacie "name: Type", symbole (+/-/ etc) :contentReference[oaicite:1]{index=1}
+
+package "Model" {
+  interface IEntity {
+    +getId(): int
+  }
+
+  abstract class BaseEntity implements IEntity {
+    -id: int
+    +getId(): int
+    {static} nextId: size_t
+  }
+
+  class User extends BaseEntity {
+    +name: std::string
+    +email: std::string
+    +login(pwd: std::string): bool
+  }
+
+  class Article {
+    +title: std::string
+    +content: std::string
+    +author: User*
+    +getSummary(maxLen: size_t): std::string
+  }
+}
+
+' -- RELACJE / PAKIETY: dziedziczenie, agregacja
+User "1" o-- "0..*" Article : authors
+BaseEntity <|-- User
+
+note right of Article
+  Wygenerowany przez clang‑uml → edytowalny plik PUML
+  Możesz ukrywać pola, filtrować klasy, zmieniać aliasy.
+end note
+
+' -- LAYOUT: kierunek rysowania + styl koloru
+left to right direction
+skinparam classBackgroundColor #F8F8FF
+
+@enduml
+`
