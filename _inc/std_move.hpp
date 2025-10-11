@@ -1,22 +1,19 @@
 #include "__preprocessor__.h"
 
 #include <iostream>
-#include <utility>  // dla std::move
+#include <utility> // dla std::move
 
-class MyBuffer {
+class MyBuffer
+{
     int* data_;
     size_t size_;
+
 public:
     // Konstruktor podstawowy — alokuje zasób
-    MyBuffer(size_t n)
-        : data_(new int[n]), size_(n)
-    {
-        std::cout << "Constructor: allocate " << size_ << "\n";
-    }
+    MyBuffer(size_t n) : data_(new int[n]), size_(n) { std::cout << "Constructor: allocate " << size_ << "\n"; }
 
     // Kopiujący konstruktor
-    MyBuffer(const MyBuffer& other)
-        : data_(new int[other.size_]), size_(other.size_)
+    MyBuffer(const MyBuffer& other) : data_(new int[other.size_]), size_(other.size_)
     {
         std::cout << "Copy constructor: copy " << size_ << "\n";
         for (size_t i = 0; i < size_; ++i)
@@ -24,8 +21,7 @@ public:
     }
 
     // Konstruktor przenoszący
-    MyBuffer(MyBuffer&& other) noexcept
-        : data_(other.data_), size_(other.size_)
+    MyBuffer(MyBuffer&& other) noexcept : data_(other.data_), size_(other.size_)
     {
         std::cout << "Move constructor: steal " << size_ << "\n";
         other.data_ = nullptr;
@@ -33,18 +29,17 @@ public:
     }
 
     // Destruktor
-    ~MyBuffer() {
-        if (data_) {
-            std::cout << "Destructor: delete " << size_ << "\n";
-        } else {
-            std::cout << "Destructor: nothing to delete\n";
-        }
+    ~MyBuffer()
+    {
+        if (data_) { std::cout << "Destructor: delete " << size_ << "\n"; }
+        else { std::cout << "Destructor: nothing to delete\n"; }
         delete[] data_;
     }
 };
 
-MyBuffer make_buffer(size_t n) {
-    return MyBuffer(n);  // (1) tworzymy tymczasowy obiekt i zwracamy
+MyBuffer make_buffer(size_t n)
+{
+    return MyBuffer(n); // (1) tworzymy tymczasowy obiekt i zwracamy
 }
 
 int main()
@@ -54,7 +49,7 @@ int main()
     // (lub zoptymalizowany przez elizję)
 
     MyBuffer buf2(10);
-    buf2 = MyBuffer(3);  // tu również może się włączyć przenoszenie
+    buf2 = MyBuffer(3); // tu również może się włączyć przenoszenie
 
     MyBuffer buf3(7);
     // Wymuszenie przenoszenia:
@@ -62,4 +57,3 @@ int main()
 
     return 0;
 }
-
