@@ -21,11 +21,31 @@ public:
     }
 
     // Konstruktor przenoszący
-    MyBuffer(MyBuffer&& other) noexcept : data_(other.data_), size_(other.size_)
+    MyBuffer(MyBuffer&& other) noexcept
+        : data_(other.data_), size_(other.size_) // kradniemy buffer innego obiektu i zabieramy mu możliwość zarządzaniam tymi danymi
     {
         std::cout << "Move constructor: steal " << size_ << "\n";
         other.data_ = nullptr;
         other.size_ = 0;
+    }
+
+    // Operator przenoszący
+    MyBuffer& operator=(MyBuffer&& other) noexcept
+    {
+        if (this != &other)
+        {
+            // zwolnij obecne zasoby
+            delete[] data_;
+
+            // „skradnij” zasoby z other
+            data_ = other.data_;
+            size_ = other.size_;
+
+            // pozostaw other w stanie „pustym”
+            other.data_ = nullptr;
+            other.size_ = 0;
+        }
+        return *this;
     }
 
     // Destruktor
