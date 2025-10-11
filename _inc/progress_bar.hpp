@@ -1,7 +1,7 @@
 #include "__preprocessor__.h"
 #include <indicators/progress_bar.hpp>
 
-void progress_bar()
+int main()
 {
     using namespace indicators;
     ProgressBar bar{option::BarWidth{50},

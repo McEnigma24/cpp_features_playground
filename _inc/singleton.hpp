@@ -17,7 +17,7 @@ public:
     ~test() { line("test Destructor called"); }
 };
 
-void singletining()
+int main()
 {
     line("Singleton test - start");
 

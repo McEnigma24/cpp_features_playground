@@ -66,3 +66,5 @@ void no_write_allocate_memcpy(void* dest, const void* src, size_t n)
     // Zapewnij, że wszystkie operacje strumieniowe zostaną zakończone
     _mm_sfence();
 }
+
+int main() { ram_access(); }

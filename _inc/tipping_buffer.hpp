@@ -294,7 +294,7 @@ public:
 // Dodatek -> funkcja co zwraca ilość bucketów, kiedy podajemy jej jaki chcemy interwał pomiędzy binami
 //
 
-void trippin()
+int main()
 {
     L2Profiler profiler(16);
 

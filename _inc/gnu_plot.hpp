@@ -1,7 +1,7 @@
 #include "__preprocessor__.h"
 #include "gplot++.h"
 
-void gnu_plot()
+int main()
 {
     Gnuplot gnuplot{};
     std::vector<double> x{1, 2, 3, 4, 5}, y{5, 2, 4, 1, 3};

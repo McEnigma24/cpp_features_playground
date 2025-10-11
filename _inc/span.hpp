@@ -95,7 +95,7 @@ void dynamic_memory()
     AaSysCom::msg_send(msg);
 }
 
-void span_play()
+int main()
 {
     var(sizeof(span<u8>));
     var(sizeof(span<u16>));

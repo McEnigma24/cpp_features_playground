@@ -100,7 +100,7 @@ namespace XorList
 
 using namespace XorList;
 
-void xoiring()
+int main()
 {
     XorList::XorLinkedList<int> list;
     list.push_back(1);

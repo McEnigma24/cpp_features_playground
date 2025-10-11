@@ -304,7 +304,7 @@ void hash_example()
     }
 }
 
-void iterator_example()
+int main()
 {
     linked_list<int> l;
     l.push_back(10);

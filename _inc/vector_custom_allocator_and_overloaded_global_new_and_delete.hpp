@@ -74,7 +74,7 @@ private:
     size_t capacity;
 };
 
-void vector_custom_allocator_and_overloaded_global_new_and_delete()
+int main()
 {
     time_stamp("vector_custom_allocator_and_overloaded_global_new_and_delete");
     // checking_if_it_works();

@@ -84,7 +84,7 @@ public:
     void process() const { m_impl->process(); }
 };
 
-void polymorphism_benchmark()
+int main()
 {
     User_static<Static_imp_1> user_static_1(new Static_imp_1());
 
