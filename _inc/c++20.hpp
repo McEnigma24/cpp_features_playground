@@ -58,8 +58,10 @@ public:
         }
     }
 
-    const std::span<const string_type> get_names() const { return names; }
+    std::vector<string_type>& get_names() const { return names; }
 };
+
+NamesList create() { return NamesList{{"John", "Jane", "Jim"}}; }
 
 int main()
 {
@@ -73,12 +75,10 @@ int main()
     TestUnion t2{.b = 3.14f};
     TestUnion t3{.c = 'a'};
 
-    line("before NamesList Constructor");
-    NamesList nl{{"John", "Jane", "Jim"}};
-    line("after NamesList Constructor");
+    // NamesList nl{{"John", "Jane", "Jim"}};
 
     line("NamesList get_names");
-    for (auto& name : nl.get_names())
+    for (auto& name : create().get_names())
     {
         cout << name << endl;
     }
