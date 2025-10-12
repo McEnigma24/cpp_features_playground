@@ -5,28 +5,43 @@
 
 class MyBuffer
 {
-    int* data_;
-    size_t size_;
+    int* data;
+    size_t size;
 
 public:
     // Konstruktor podstawowy — alokuje zasób
-    MyBuffer(size_t n) : data_(new int[n]), size_(n) { std::cout << "Constructor: allocate " << size_ << "\n"; }
+    MyBuffer(size_t n) : data(new int[n]), size(n) { std::cout << "Constructor: allocate " << size << "\n"; }
 
     // Kopiujący konstruktor
-    MyBuffer(const MyBuffer& other) : data_(new int[other.size_]), size_(other.size_)
+    MyBuffer(const MyBuffer& other) : data(new int[other.size]), size(other.size)
     {
-        std::cout << "Copy constructor: copy " << size_ << "\n";
-        for (size_t i = 0; i < size_; ++i)
-            data_[i] = other.data_[i];
+        std::cout << "Copy constructor: copy " << size << "\n";
+        for (size_t i = 0; i < size; ++i)
+            data[i] = other.data[i];
+    }
+
+    // Operator przenoszący
+    MyBuffer& operator=(const MyBuffer& other)
+    {
+        if (this != &other)
+        {
+            delete[] data;
+
+            data = new int[other.size];
+            size = other.size;
+
+            memcpy(data, other.data, size * sizeof(int));
+        }
+        return *this;
     }
 
     // Konstruktor przenoszący
     MyBuffer(MyBuffer&& other) noexcept
-        : data_(other.data_), size_(other.size_) // kradniemy buffer innego obiektu i zabieramy mu możliwość zarządzaniam tymi danymi
+        : data(other.data), size(other.size) // kradniemy buffer innego obiektu i zabieramy mu możliwość zarządzaniam tymi danymi
     {
-        std::cout << "Move constructor: steal " << size_ << "\n";
-        other.data_ = nullptr;
-        other.size_ = 0;
+        std::cout << "Move constructor: steal " << size << "\n";
+        other.data = nullptr;
+        other.size = 0;
     }
 
     // Operator przenoszący
@@ -35,15 +50,15 @@ public:
         if (this != &other)
         {
             // zwolnij obecne zasoby
-            delete[] data_;
+            delete[] data;
 
             // „skradnij” zasoby z other
-            data_ = other.data_;
-            size_ = other.size_;
+            data = other.data;
+            size = other.size;
 
             // pozostaw other w stanie „pustym”
-            other.data_ = nullptr;
-            other.size_ = 0;
+            other.data = nullptr;
+            other.size = 0;
         }
         return *this;
     }
@@ -51,9 +66,9 @@ public:
     // Destruktor
     ~MyBuffer()
     {
-        if (data_) { std::cout << "Destructor: delete " << size_ << "\n"; }
+        if (data) { std::cout << "Destructor: delete " << size << "\n"; }
         else { std::cout << "Destructor: nothing to delete\n"; }
-        delete[] data_;
+        delete[] data;
     }
 };
 
