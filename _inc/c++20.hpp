@@ -26,6 +26,50 @@ public:
         size = strlen(data);
     }
 
+    // Copy constructor
+    MyString(const MyString& other) : data(new char[other.size + 1]), size(other.size)
+    {
+        line("MyString Copy Constructor");
+        strcpy(data, other.data);
+    }
+
+    // Copy assignment operator
+    MyString& operator=(const MyString& other)
+    {
+        line("MyString Copy Assignment");
+        if (this != &other)
+        {
+            delete[] data;
+            size = other.size;
+            data = new char[size + 1];
+            strcpy(data, other.data);
+        }
+        return *this;
+    }
+
+    // Move constructor
+    MyString(MyString&& other) noexcept : data(other.data), size(other.size)
+    {
+        line("MyString Move Constructor");
+        other.data = nullptr;
+        other.size = 0;
+    }
+
+    // Move assignment operator
+    MyString& operator=(MyString&& other) noexcept
+    {
+        line("MyString Move Assignment");
+        if (this != &other)
+        {
+            delete[] data;
+            data = other.data;
+            size = other.size;
+            other.data = nullptr;
+            other.size = 0;
+        }
+        return *this;
+    }
+
     ~MyString()
     {
         line("MyString Destructor");
@@ -58,7 +102,7 @@ public:
         }
     }
 
-    std::vector<string_type>& get_names() const { return names; }
+    std::vector<string_type>& get_names() { return names; }
 };
 
 NamesList create() { return NamesList{{"John", "Jane", "Jim"}}; }
@@ -75,10 +119,12 @@ int main()
     TestUnion t2{.b = 3.14f};
     TestUnion t3{.c = 'a'};
 
-    // NamesList nl{{"John", "Jane", "Jim"}};
+    // for (auto& name : create().get_names()) // this expands to
+    // {
+    //     cout << name << endl;
+    // }
 
-    line("NamesList get_names");
-    for (auto& name : create().get_names())
+    for (auto nameList = create(); auto& name : nameList.get_names())
     {
         cout << name << endl;
     }
