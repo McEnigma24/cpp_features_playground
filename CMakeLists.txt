@@ -37,12 +37,13 @@ aux_source_directory(_test TEST_SOURCES)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wfatal-errors -Werror=uninitialized -Werror=init-self -Werror=reorder -Wdelete-incomplete")    # for normal coding
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native -w")                                                         # for release
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -save-temps")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
 
 #                                                                  https://hjlebbink.github.io/x86doc/
 #                                                                  - look for *.o file
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -save-temps")   # ASSEMBLY + PREPROCESSED and other
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -S") # ASSEMBLY
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -S -fverbose-asm") # ASSEMBLY with comments
 
