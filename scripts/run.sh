@@ -1,18 +1,11 @@
 #!/bin/bash
 
-# ✅ ❌
-
-DIR_ROOT=$(dirname "$(pwd)")
-DIR_BUILD="build"
-DIR_LOG="log"
-DIR_TARGET="exe"
-DIR_OUTPUT="output"
-DIR_SCRIPTS="scripts"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../config"
 
 PATH_CLEANING_CORE_DUMP="$DIR_SCRIPTS/clear_core_dump.sh"
 
-clear_dir() { if [ -d $1 ]; then rm -rf $1; fi; mkdir $1; }
-run_and_collect()
+function run_and_collect()
 {
     total_files=$(ls -1 $DIR_TARGET/* 2>/dev/null | wc -l)
     current_file=1

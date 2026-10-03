@@ -1,8 +1,7 @@
-external/
+.last_arch_marker
 
-core_dump*
 build/
+
 exe/
 log/
 output/
-run_time_config/
