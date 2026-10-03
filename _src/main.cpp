@@ -17,6 +17,8 @@
 // #include "other/std_move.hpp"
 // #include "other/preprocessor_substitution_example.hpp"
 // #include "other/factorization.hpp"
-#include "other/scoped_pop.hpp"
+// #include "other/scoped_pop.hpp"
 
 // #include "c++20/range_for_loop_decignated_initialization.hpp"
+
+#include "multithreaded_atomic_concurrent/atomic.hpp"
